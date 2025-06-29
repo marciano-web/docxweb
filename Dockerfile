@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 5000
 
 # Comando para iniciar o app em produção
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5000", "--workers", "2"]
+CMD gunicorn app:app --bind 0.0.0.0:$PORT --workers 2
