@@ -1,12 +1,20 @@
 from flask import Flask, request, jsonify
 from flask_migrate import Migrate
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
-
 from config import Config
 from models import db, User
 
 app = Flask(__name__)
 app.config.from_object(Config)
+
+# Health check na raiz
+@app.route('/', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'ok', 'message': 'DocxWeb está rodando'}), 200
+
+# Rotas de registro, login, protected, logout...
+@app.route('/register', methods=['POST'])
+def register():
 
 # Extensões
 db.init_app(app)
