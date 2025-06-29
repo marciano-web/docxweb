@@ -12,10 +12,6 @@ app.config.from_object(Config)
 def health_check():
     return jsonify({'status': 'ok', 'message': 'DocxWeb está rodando'}), 200
 
-# Rotas de registro, login, protected, logout...
-@app.route('/register', methods=['POST'])
-def register():
-
 # Extensões
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -26,6 +22,7 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# Rota de registro
 @app.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
@@ -37,6 +34,7 @@ def register():
     db.session.commit()
     return jsonify({'message': 'Usuário registrado com sucesso.'}), 201
 
+# Rota de login
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -46,11 +44,13 @@ def login():
         return jsonify({'message': 'Login realizado com sucesso.'})
     return jsonify({'error': 'Credenciais inválidas.'}), 401
 
+# Rota protegida
 @app.route('/protected')
 @login_required
 def protected():
     return jsonify({'email': current_user.email, 'id': current_user.id})
 
+# Logout
 @app.route('/logout')
 @login_required
 def logout():
@@ -58,4 +58,5 @@ def logout():
     return jsonify({'message': 'Desconectado.'})
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    port = int(os.getenv('PORT', 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)
